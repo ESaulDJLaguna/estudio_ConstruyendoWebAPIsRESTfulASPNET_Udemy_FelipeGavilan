@@ -39,7 +39,12 @@ namespace BibliotecaAPI.Controllers
         {
             var existeAutor = await _context.Autores.AnyAsync(x => x.Id == libro.AutorId);
 
-            if (!existeAutor) return BadRequest($"El autor de id {libro.AutorId} no existe");
+            if (!existeAutor)
+            {
+                ModelState.AddModelError(nameof(libro.AutorId), $"El autor de id {libro.AutorId} no existe");
+                return ValidationProblem();
+                //return BadRequest($"El autor de id {libro.AutorId} no existe");
+            }
 
             _context.Add(libro);
             await _context.SaveChangesAsync();
